@@ -179,7 +179,6 @@
   color: white;
   border: none;
   border-radius: 6px;
-  font-size: 0.95rem;
   font-weight: 600;
   cursor: pointer;
   transition: all 0.2s ease;
@@ -191,6 +190,32 @@
   transform: translateY(-1px);
   box-shadow: 0 4px 6px rgba(72, 187, 120, 0.3);
   color: white;
+}
+
+.ai-analysis {
+  background-color: rgba(66, 153, 225, 0.05);
+  border-left: 3px solid var(--primary-color);
+  padding: 1rem;
+  margin: 1rem 0;
+  border-radius: 0 4px 4px 0;
+}
+
+.ai-analysis h5 {
+  color: var(--primary-color);
+  margin: 0 0 0.5rem 0;
+  font-size: 1rem;
+}
+
+.ai-analysis h5:not(:first-child) {
+  margin-top: 1rem;
+}
+
+.ai-analysis p {
+  color: #2d3748;
+  line-height: 1.6;
+  margin: 0;
+  font-size: 0.95rem;
+  white-space: pre-line;
 }
 
 @media (max-width: 1024px) {

@@ -23,6 +23,10 @@ interface ValuationResult {
     actual_property_use: string;
     legal_description: string;
   };
+  AI_content: {
+    property_description: string;
+    client_letter: string;
+  };
 }
 
 interface ValuationReportProps {

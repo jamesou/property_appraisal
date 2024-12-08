@@ -21,6 +21,13 @@ interface ValuationResult {
     land_value: string;
     building_total_floor_area: string;
     improvements_description: string;
+    property_category: string;
+    unit_of_property_id: string;
+    valuation_no_roll: string;
+  };
+  AI_content: {
+    property_description: string;
+    client_letter: string;
   };
 }
 
@@ -56,60 +63,121 @@ const ReportModal: React.FC<ReportModalProps> = ({ onClose, valuationResult }) =
     }
   };
 
+  const formatCurrency = (value: string) => {
+    return `$${parseInt(value).toLocaleString()}`;
+  };
+
   const generatePDF = () => {
     const doc = new jsPDF();
     const pageWidth = doc.internal.pageSize.getWidth();
-    let yPosition = 20;
+    const pageHeight = doc.internal.pageSize.getHeight();
+    const margin = 20;
+    const contentWidth = pageWidth - 2 * margin;
+    let currentY = 20;
+
+    // Helper function to check and add new page if needed
+    const checkAndAddPage = (requiredSpace: number) => {
+      if (currentY + requiredSpace > pageHeight - margin) {
+        doc.addPage();
+        currentY = margin;
+        return true;
+      }
+      return false;
+    };
+
+    // Helper function to add text with page break handling
+    const addText = (text: string, fontSize: number, color: number[], isHeader: boolean = false) => {
+      doc.setFontSize(fontSize);
+      doc.setTextColor(...color);
+      
+      if (isHeader) {
+        checkAndAddPage(20);
+        currentY += 20;
+      } else {
+        checkAndAddPage(10);
+        currentY += 10;
+      }
+      
+      if (Array.isArray(text)) {
+        text.forEach((line) => {
+          if (checkAndAddPage(7)) {
+            // Reset text properties after new page
+            doc.setFontSize(fontSize);
+            doc.setTextColor(...color);
+          }
+          doc.text(line, margin, currentY);
+          currentY += 7;
+        });
+      } else {
+        doc.text(text, margin, currentY);
+      }
+    };
 
     // Title
     doc.setFontSize(20);
-    doc.text('Property Valuation Report', pageWidth / 2, yPosition, { align: 'center' });
-    yPosition += 20;
+    doc.setTextColor(43, 108, 176);
+    doc.text('Property Valuation Report', pageWidth / 2, currentY, { align: 'center' });
+    currentY += 20;
 
     // Property Details
-    doc.setFontSize(16);
-    doc.text('Property Details', 20, yPosition);
-    yPosition += 10;
-
-    doc.setFontSize(12);
-    doc.text(`Address: ${valuationResult.address.full_address}`, 20, yPosition);
-    yPosition += 8;
-    doc.text(`Area: ${valuationResult.address.suburb_locality}, ${valuationResult.address.town_city}`, 20, yPosition);
-    yPosition += 8;
-    doc.text(`Territory: ${valuationResult.address.territorial_authority}`, 20, yPosition);
-    yPosition += 8;
-    doc.text(`Building Floor Area: ${valuationResult.valuation.building_total_floor_area} m²`, 20, yPosition);
-    yPosition += 15;
+    addText('Property Details', 16, [43, 108, 176], true);
+    addText([
+      `Address: ${valuationResult.address.full_address}`,
+      `Location: ${valuationResult.address.suburb_locality}, ${valuationResult.address.town_city}`,
+      `Property Type: ${valuationResult.valuation.property_category}`,
+      `Building Area: ${valuationResult.valuation.building_total_floor_area} m²`
+    ], 12, [0, 0, 0]);
 
     // Valuation Details
-    doc.setFontSize(16);
-    doc.text('Valuation Details', 20, yPosition);
-    yPosition += 10;
+    addText('Valuation Details', 16, [43, 108, 176], true);
+    addText([
+      `Estimated Value: ${formatCurrency(valuationResult.valuation.capital_value)}`,
+      `Land Value: ${formatCurrency(valuationResult.valuation.land_value)}`,
+      `Improvements Value: ${formatCurrency(valuationResult.valuation.improvements_value)}`
+    ], 12, [0, 0, 0]);
 
-    doc.setFontSize(12);
-    doc.text(`Estimated Value: $${parseInt(valuationResult.valuation.capital_value).toLocaleString()}`, 20, yPosition);
-    yPosition += 8;
-    doc.text(`Land Value: $${parseInt(valuationResult.valuation.land_value).toLocaleString()}`, 20, yPosition);
-    yPosition += 8;
-    doc.text(`Improvements Value: $${parseInt(valuationResult.valuation.improvements_value).toLocaleString()}`, 20, yPosition);
-    yPosition += 15;
+    // AI Analysis
+    addText('AI Market Analysis', 16, [43, 108, 176], true);
+    
+    // Property Description
+    addText('Property Description:', 14, [0, 0, 0], true);
+    const propertyDesc = doc.splitTextToSize(valuationResult.AI_content.property_description, contentWidth);
+    addText(propertyDesc, 12, [0, 0, 0]);
 
-    // Selected Options
-    doc.setFontSize(16);
-    doc.text('Marketing Strategy', 20, yPosition);
-    yPosition += 10;
+    // Client Letter
+    addText('Client Letter:', 14, [0, 0, 0], true);
+    const clientLetter = doc.splitTextToSize(valuationResult.AI_content.client_letter, contentWidth);
+    addText(clientLetter, 12, [0, 0, 0]);
 
-    doc.setFontSize(12);
-    doc.text(`Sales Method: ${reportOptions.salesMethod}`, 20, yPosition);
-    yPosition += 8;
-    doc.text(`Advertisement Package: ${reportOptions.advertisement}`, 20, yPosition);
-    yPosition += 8;
-    doc.text(`Target Buyer Group: ${reportOptions.targetBuyer}`, 20, yPosition);
+    // Additional Information
+    addText('Additional Information', 16, [43, 108, 176], true);
+    addText([
+      `Property ID: ${valuationResult.valuation.unit_of_property_id}`,
+      `Roll Number: ${valuationResult.valuation.valuation_no_roll}`
+    ], 12, [0, 0, 0]);
 
-    // Add footer
-    const footer = 'Generated by NZ Property Appraisal';
-    doc.setFontSize(10);
-    doc.text(footer, pageWidth / 2, doc.internal.pageSize.getHeight() - 10, { align: 'center' });
+    // Sales Strategy
+    if (reportOptions.salesMethod || reportOptions.targetBuyer) {
+      addText('Sales Strategy', 16, [43, 108, 176], true);
+      const salesInfo = [];
+      if (reportOptions.salesMethod) {
+        salesInfo.push(`Recommended Sales Method: ${reportOptions.salesMethod}`);
+      }
+      if (reportOptions.targetBuyer) {
+        salesInfo.push(`Target Market: ${reportOptions.targetBuyer}`);
+      }
+      addText(salesInfo, 12, [0, 0, 0]);
+    }
+
+    // Footer on each page
+    const pageCount = doc.internal.getNumberOfPages();
+    const today = new Date().toLocaleDateString();
+    for (let i = 1; i <= pageCount; i++) {
+      doc.setPage(i);
+      doc.setFontSize(10);
+      doc.setTextColor(128, 128, 128);
+      doc.text(`Generated on ${today} - Page ${i} of ${pageCount}`, margin, pageHeight - 20);
+    }
 
     // Save the PDF
     doc.save('property-valuation-report.pdf');
@@ -119,7 +187,7 @@ const ReportModal: React.FC<ReportModalProps> = ({ onClose, valuationResult }) =
     <div className="modal-overlay">
       <div className="modal-content">
         <button className="close-modal" onClick={onClose}>&times;</button>
-        
+
         {!showPreview ? (
           <div className="report-options">
             <h2>Generate Comprehensive Report</h2>
@@ -270,7 +338,7 @@ const ReportModal: React.FC<ReportModalProps> = ({ onClose, valuationResult }) =
               <p><strong>Sales Method:</strong> {reportOptions.salesMethod}</p>
               <p><strong>Advertisement Package:</strong> {reportOptions.advertisement}</p>
               <p><strong>Target Buyer Group:</strong> {reportOptions.targetBuyer}</p>
-              
+
               <h3>Property Details</h3>
               <p><strong>Address:</strong> {valuationResult.address.full_address}</p>
               <p><strong>Estimated Value:</strong> ${parseInt(valuationResult.valuation.capital_value).toLocaleString()}</p>

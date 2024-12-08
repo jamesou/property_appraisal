@@ -920,7 +920,7 @@ body {
 }
 
 .primary-button:hover {
-  background: #2c5282;
+  background-color: #3fa065;
 }
 
 .primary-button:disabled {
@@ -965,7 +965,7 @@ body {
 }
 
 .download-report-button:hover {
-  background: #38a169;
+  background-color: #3fa065;
 }
 
 @media (max-width: 1024px) {

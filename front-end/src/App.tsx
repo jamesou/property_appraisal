@@ -16,26 +16,26 @@ interface FormData {
 
 interface ValuationResult {
   address: {
-    address_id: string;
     full_address: string;
-    town_city: string;
     suburb_locality: string;
+    town_city: string;
     territorial_authority: string;
-    full_road_name: string;
-    address_number: string;
   };
   valuation: {
-    unit_of_property_id: string;
-    valuation_no_roll: string;
     capital_value: string;
-    improvements_value: string;
     land_value: string;
-    no_of_bedrooms: string;
+    improvements_value: string;
     improvements_description: string;
     building_total_floor_area: string;
     property_category: string;
+    unit_of_property_id: string;
+    valuation_no_roll: string;
+    no_of_bedrooms: string;
     actual_property_use: string;
-    legal_description: string;
+  };
+  AI_content: {
+    property_description: string;
+    client_letter: string;
   };
 }
 
