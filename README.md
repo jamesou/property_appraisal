@@ -89,28 +89,28 @@ property_appraisal/
 
 ## Screenshots and Features
 
-### 1. Dashboard Overview
-![Dashboard Overview](screenshots/1.png)
+### 1. Homepage
+![Homepage](screenshots/1.png)
 The main dashboard provides a comprehensive view of property valuations across New Zealand.
 
-### 2. Property Search
-![Property Search](screenshots/2.png)
+### 2. Generate comprehensive reports
+![Generate comprehensive reports](screenshots/2.png)
 Advanced search functionality allows users to find specific properties using various filters.
 
-### 3. Data Visualization
-![Data Visualization](screenshots/3.png)
+### 3. Sale Methods Selection
+![Sale Methods Selection](screenshots/3.png)
 Interactive charts and graphs help visualize property trends and patterns.
 
-### 4. AI Analysis
-![AI Analysis](screenshots/4.png)
+### 4. Preview Report
+![Preview Report](screenshots/4.png)
 AI-powered insights provide deeper understanding of property valuations and market trends.
 
 ### 5. Report Generation
 ![Report Generation](screenshots/5.png)
 Generate detailed PDF reports with property analysis and comparisons.
 
-### 6. Detailed Property View
-![Detailed Property View](screenshots/6.png)
+### 6. Downloaded Property PDF
+![Downloaded Property PDF](screenshots/6.png)
 In-depth view of individual property details and valuation history.
 
 ## Generated Reports
