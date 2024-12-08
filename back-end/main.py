@@ -15,6 +15,12 @@ logger = logging.getLogger(__name__)
 import models
 import schemas
 from database import engine, get_db
+from llm.client_letter import ClientLetterGenerator
+from llm.property_description import PropertyDescriptionGenerator
+
+# Initialize LLM generators
+client_letter_gen = ClientLetterGenerator()
+property_desc_gen = PropertyDescriptionGenerator()
 
 # Log SQL queries
 @event.listens_for(Engine, "before_cursor_execute")
@@ -95,7 +101,8 @@ def search_properties(search_criteria: schemas.PropertySearch, db: Session = Dep
             row_dict = dict(zip(columns, row))
             logger.info(f"Processing row: {row_dict}")
             
-            response_data.append({
+            # Create property data dictionary
+            property_data = {
                 "valuation": {
                     "unit_of_property_id": row_dict["unit_of_property_id"],
                     "valuation_no_roll": row_dict["valuation_no_roll"],
@@ -118,7 +125,31 @@ def search_properties(search_criteria: schemas.PropertySearch, db: Session = Dep
                     "full_road_name": row_dict["full_road_name"],
                     "address_number": row_dict["address_number"]
                 }
-            })
+            }
+
+            try:
+                # Generate property description
+                property_description = property_desc_gen.generate_description(property_data)
+                
+                # Generate client letter (using default values for client name and purpose)
+                client_letter = client_letter_gen.generate_client_letter(
+                    property_data,
+                    client_name="Property Owner",
+                    purpose="Valuation Report"
+                )
+
+                # Add AI content to response
+                property_data["AI_content"] = {
+                    "property_description": property_description,
+                    "client_letter": client_letter
+                }
+            except Exception as e:
+                logger.error(f"Error generating LLM content: {str(e)}")
+                property_data["AI_content"] = {
+                    "error": f"Failed to generate content: {str(e)}"
+                }
+
+            response_data.append(property_data)
 
         logger.info(f"Found {len(response_data)} matching properties")
         return response_data
