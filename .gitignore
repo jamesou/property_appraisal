@@ -24,7 +24,6 @@ yarn-error.log*
 
 __pycache__
 *.csv
-*.pdf
 .env.example
 back-end/llm/__init__.py
 back-end/.env
