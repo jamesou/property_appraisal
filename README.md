@@ -87,31 +87,50 @@ property_appraisal/
 - Responsive web interface
 - Secure database integration
 
+## Data Sources
+
+This demo project utilizes property data from various authoritative sources in New Zealand:
+
+### Primary Data Sources
+- **LINZ (Land Information New Zealand)**: The primary dataset used in this demo is sourced from LINZ's national district valuation roll
+- **REINZ (Real Estate Institute of New Zealand)**: Property market data and trends (not included in demo)
+- **Property Suite**: Comprehensive property information and analytics (not included in demo)
+
+The demo version currently uses a subset of LINZ data with added data dictionary in the `data_process` folder. For a production environment, it's recommended to integrate with all mentioned data sources through their official APIs.
+
 ## Screenshots and Features
 
 ### 1. Homepage
 ![Homepage](screenshots/1.png)
-The main dashboard provides a comprehensive view of property valuations across New Zealand.
+Landing page showcasing the property analysis dashboard with key metrics and navigation options.
 
-### 2. Generate comprehensive reports
+### 2. Generate Comprehensive Reports
 ![Generate comprehensive reports](screenshots/2.png)
-Advanced search functionality allows users to find specific properties using various filters.
+Interface for generating detailed property reports with customizable parameters and filters.
 
 ### 3. Sale Methods Selection
 ![Sale Methods Selection](screenshots/3.png)
-Interactive charts and graphs help visualize property trends and patterns.
+Selection interface for different property sale methods and analysis options.
 
 ### 4. Preview Report
 ![Preview Report](screenshots/4.png)
-AI-powered insights provide deeper understanding of property valuations and market trends.
+Preview interface showing the generated report before final download.
 
 ### 5. Report Generation
 ![Report Generation](screenshots/5.png)
-Generate detailed PDF reports with property analysis and comparisons.
+Final report generation step with additional customization options.
 
 ### 6. Downloaded Property PDF
 ![Downloaded Property PDF](screenshots/6.png)
-In-depth view of individual property details and valuation history.
+Example of the final PDF report with comprehensive property analysis and insights.
+
+## Data Processing
+
+The system processes the New Zealand property data, which includes:
+- Property valuations
+- Location data
+- Property characteristics
+- Historical valuation trends
 
 ## Generated Reports
 
@@ -121,14 +140,6 @@ The system can generate comprehensive property valuation reports (`property-valu
 - Historical valuation trends
 - AI-generated insights
 - Location-based analytics
-
-## Data Processing
-
-The system processes the New Zealand national district valuation roll data, which includes:
-- Property valuations
-- Location data
-- Property characteristics
-- Historical valuation trends
 
 ## Contributing
 
